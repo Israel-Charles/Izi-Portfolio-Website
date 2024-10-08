@@ -14,7 +14,7 @@ In setting up my personal portfolio website on a repurposed home server, I integ
 
 4. **UFW (Uncomplicated Firewall)**: UFW is a firewall configuration tool for Linux. It is used to secure the server by controlling incoming and outgoing network traffic, allowing only necessary ports (such as 80 for HTTP and 443 for HTTPS) to be accessible.
 
-5. **Cloudflare**: Cloudflare provides DNS (Domain Name System) services. By configuring my domain's DNS through Cloudflare, I ensure that users can reach my website using a human-readable address (israelcharles.com). Additionally, Cloudflare offers benefits like SSL/TLS encryption and caching to enhance security and performance.
+5. **Cloudflare**: Cloudflare provides DNS (Domain Name System) services. By configuring my domain's DNS through Cloudflare, I ensure that users can reach my website using a human-readable address (israelcharles.com). Additionally, Cloudflare offers benefits like SSL/TLS encryption and caching to enhance security and performance.
 
 6. **WordPress with Simply Static Plugin**: WordPress is a content management system (CMS) that simplifies website creation and management. I used it to design and organize my website's content. The Simply Static plugin allows for exporting the dynamic WordPress site as static HTML files, which are then served by the Node.js server. This approach improves site performance and security by reducing server load.
 
