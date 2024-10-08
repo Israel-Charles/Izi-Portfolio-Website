@@ -2,8 +2,6 @@
 
 This portfolio website is hosted on a custom home server built from an old computer. I used a Linux OS to repurpose the machine, configured the network to allow incoming traffic, and leveraged technologies like Node.js, Express, and PM2 to ensure smooth backend operations. The design was done using WordPress for ease and flexibility, then converted to a static site using the Simply Static plugin. Cloudflare handles DNS for enhanced security and performance, while UFW manages the firewall.
 
----
-
 ## Technology Description
 
 In setting up my personal portfolio website on a repurposed home server, I integrated several technologies, each serving a specific function:
