@@ -2,6 +2,8 @@
 
 This portfolio website is hosted on a custom home server built from an old computer. I used a Linux OS (Ubuntu 24.04) to repurpose the machine, configured the network to allow incoming traffic, and leveraged technologies like Node.js, Express, and PM2 to ensure smooth backend operations. The frontend/design was done using WordPress for ease and flexibility, then converted to a static site using the Simply Static plugin. Cloudflare handles DNS for enhanced security and performance, while UFW manages the firewall.
 
+The server configuration and the static pages to deliver are in this repo. Changes made to this repo automatically update the website through a GitHub Webhook and a Node.js/Express route that listens for incoming webhook POST requests from GitHub.
+
 ## Technology Description
 
 In setting up my personal portfolio website on a repurposed home server, I integrated several technologies, each serving a specific function:
