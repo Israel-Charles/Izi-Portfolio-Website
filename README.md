@@ -90,7 +90,7 @@ Below are the configurations, and processes I followed to get the site up and ru
 #### 6. **Website Design with WordPress**
 
 - Install WordPress locally or on a separate instance for easy content creation.
-- Use the **Simply Static** plugin to export the site into static files.
+- Use the **Simply Static** plugin to export the site into static files. (You might need to go on the `Simply Static` plugin settings and set `Replacing URLS` to `Offline Usage` and toggle `Force URL replacements`.) 
 - Copy the static files into your Express server’s `public` directory (Note that I have renamed my `public` folder to `Frontend`).
 
 #### 7. **Cloudflare DNS Setup**
