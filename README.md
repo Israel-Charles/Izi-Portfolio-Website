@@ -31,7 +31,7 @@ Below are the configurations, and processes I followed to get the site up and ru
 - Home Wi-Fi router with port forwarding capabilities
 - Internet connection with a static or dynamic DNS setup (Cloudflare recommended)
   
-### Steps
+### Steps to set up Server and Website
 
 #### 1. **Linux OS Installation**
 
@@ -102,3 +102,97 @@ Below are the configurations, and processes I followed to get the site up and ru
 #### 8. **Testing & Deployment**
 
 - Ensure your website is accessible via the domain.
+
+### Steps to set up Automatic Update via Github Hooks and a Script
+
+The steps below are to automatically update your website when changes are made to the static pages (which are served from a GitHub repo) whenever changes are pushed to that repository.
+
+#### 1. **Set Up a Webhook in Your GitHub Repository**
+
+First, you’ll need to create a webhook in your GitHub repository that will notify your server whenever there’s a push to the repository.
+
+##### Steps:
+1. **Go to your GitHub repository** and click on **Settings** > **Webhooks** > **Add webhook**.
+2. **Fill in the webhook details**:
+   - **Payload URL**: This is the URL that will receive the webhook request. For example, if your server’s public IP address is `https://israel.com`, your webhook URL could be something like:
+     ```
+     https://israel.com/webhook
+     ```
+     This URL will be where GitHub sends POST requests when something is pushed to the repo.
+   - **Content type**: Set this to `application/json`.
+   - **Which events would you like to trigger this webhook?**: Select **Just the push event**.
+3. **Save the webhook**. GitHub will now send a POST request to your server every time a push occurs.
+
+#### 2. **Create a Webhook Listener on Your Server**
+
+Next, you’ll need to set up a **Node.js/Express route** that listens for incoming webhook POST requests from GitHub. When a push is detected, the webhook handler will trigger a script to `git pull` the latest changes into your local server.
+
+##### Steps:
+1. **Set up the webhook route in your Express app**:
+
+   Add the following route to the file that handles your routing. For the default setup mentioned in the instructions above, the file is in `routes/index.js`. This route script will handle the incoming POST requests from GitHub:
+
+   ```js
+   const { exec } = require('child_process');  // We'll use this to run git pull
+
+   // Webhook listener route
+   app.post('/webhook', (req, res) => {
+       console.log('Webhook received!');
+       // Optionally, check the payload to ensure it's from the right repo
+       // if (req.body.repository.full_name === 'your-username/your-repo-name') {
+
+       // Run git pull on the server when a push occurs
+       exec('cd /path/to/your/static-pages-repo && git pull origin main', (err, stdout, stderr) => {
+           if (err) {
+               console.error('Error during git pull:', err);
+               return res.status(500).send('Internal Server Error');
+           }
+           console.log('Git pull output:', stdout);
+           res.status(200).send('Webhook processed');
+       });
+   });
+   ```
+
+2. **Test and Verify the GitHub webhook route**:
+   - Your webhook listener route is `/webhook` (in this case, `https://israelcharles.com/webhook`).
+   - **Push a change** to your GitHub repository.
+   - **Monitor the server logs** or run `curl http://your-server-ip/webhook` to manually test if the webhook is being triggered.
+   - The `git pull` command should now run, updating your local static files with the latest push from GitHub.
+
+#### 3. **Security Considerations (Optional)**
+
+To make sure that only GitHub can trigger this webhook (and not arbitrary users), you can verify the payload in the Express route by checking the webhook signature GitHub sends:
+
+- In the **Webhook Settings** in GitHub, enable the **secret**. GitHub will include this secret as a header (`X-Hub-Signature-256`) in the webhook request.
+- On your server, you can use this secret to verify that the request is coming from GitHub.
+
+Here's an example of how you can validate the webhook in your Express app:
+
+```js
+const crypto = require('crypto');
+
+// Set your webhook secret here (the same secret you set in GitHub)
+const secret = 'your-webhook-secret';
+
+// Middleware to verify GitHub webhook signature
+app.post('/webhook', (req, res) => {
+    const sig = req.get('X-Hub-Signature-256');
+    const payload = JSON.stringify(req.body);
+
+    const hmac = crypto.createHmac('sha256', secret);
+    hmac.update(payload);
+    const calculatedSignature = 'sha256=' + hmac.digest('hex');
+
+    if (sig !== calculatedSignature) {
+        return res.status(403).send('Forbidden');
+    }
+
+    // Continue with your git pull logic here...
+});
+```
+
+#### Summary of Automatic Deployment:
+1. **GitHub Webhook**: Created a webhook in your GitHub repository that triggers whenever a push is made.
+2. **Webhook Listener**: Set up an Express route to handle webhook requests.
+3. **Security**: Optionally secured the webhook with a secret.
+4. **Testing**: Tested the setup by pushing to the repository and confirming that changes were pulled onto your server.
