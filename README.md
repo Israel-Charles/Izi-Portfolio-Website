@@ -93,6 +93,25 @@ Below are the configurations, and processes I followed to get the site up and ru
 - Use the **Simply Static** plugin to export the site into static files. (You might need to go on the `Simply Static` plugin settings and set `Replacing URLS` to `Offline Usage` and toggle `Force URL replacements`.) 
 - Copy the static files into your Express server’s `public` directory (Note that I have renamed my `public` folder to `Frontend`).
 
+> If the **Simply Static** plugin does not work as expected, you can use the terminal/command line interface and use the `wget` command to download a static version of the file.
+>
+> Example command is as follow (running on mac):
+> ```
+> wget --mirror --convert-links --adjust-extension --page-requisites --no-parent http://israel-charles.local/ -P ~/Desktop/static-site
+> ```
+>
+> It downloads a **full copy** of `http://israel-charles.local/` (HTML + CSS + JS + images), and saves it to `~/Desktop/static-site`.
+>
+>| Option                     | Meaning                                                                                                |
+>| -------------------------- | ------------------------------------------------------------------------------------------------------ |
+>| `--mirror`                 | Enables recursive download, timestamping, and infinite depth — like "make a full mirror of this site." |
+>| `--convert-links`          | After downloading, rewrite HTML links to point to local files (so you can browse offline).             |
+>| `--adjust-extension`       | Save files with proper extensions (e.g. `.html`, `.css`, `.js`).                                       |
+>| `--page-requisites`        | Download all necessary resources: CSS, JS, images, fonts, etc.                                         |
+>| `--no-parent`              | Do not follow links to parent directories — stay within `http://israel-charles.local/`.                |
+>| `-P ~/Desktop/static-site` | Set the **output directory** — this will save everything to `~/Desktop/static-site`.                   |
+
+
 #### 7. **Cloudflare DNS Setup**
 
 - Register a domain name (or use an existing one).
